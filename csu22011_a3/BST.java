@@ -8,12 +8,6 @@
  *
  *************************************************************************/
 
-
-
-
-
-
-
 package csu22011_a3;
 
 import java.util.NoSuchElementException;
@@ -200,7 +194,40 @@ public class BST<Key extends Comparable<Key>, Value> {
      * @param key the key to delete
      */
     public void delete(Key key) {
-        //TODO fill in the correct implementation.
+        root = delete(root, key);
+    }
+
+    private Node delete(Node root, Key key) {
+        if (root == null) return null;
+        int cmp = key.compareTo(root.key);
+        if (cmp < 0) root.left = delete(root.left, key);
+        else if (cmp > 0) root.right = delete(root.right, key);
+        else { // delete this node
+            if (root.right == null) return root.left;
+            if (root.left == null) return root.right;
+            Node t = root;
+            root = max(t.left);
+            root.left = deleteMax(t.right);
+            root.right = t.right;
+        }
+        root.N = size(root.left) + size(root.right) + 1;
+        return root;
+    }
+
+    private Node max(Node root) {
+        Node tmp = root;
+        while(tmp.right != null) tmp = tmp.right;
+        return tmp;
+    }
+
+
+    private Node deleteMax(Node x) {
+        // go right until we get a node with a null right link
+        // if it has a null right link, return the link to its left node
+        if (x.right == null) return x.left;
+        x.right = deleteMax(x.right);
+        x.N = size(x.right) + size(x.left) + 1;
+        return x;
     }
 
 
